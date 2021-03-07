@@ -3,6 +3,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
   use Appsignal.Instrumentation.Decorators
   import Ecto.Query
 
+  alias Absinthe.Relay.Connection
   alias Glimesh.Accounts
   alias Glimesh.Accounts.User
   alias Glimesh.ChannelCategories
@@ -37,7 +38,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
   def all_channels(args, _) do
     case all_channels(args) do
       {:ok, channels} ->
-        Absinthe.Relay.Connection.from_query(channels, &Repo.all/1, args)
+        Connection.from_query(channels, &Repo.all/1, args)
 
       _ ->
         {:error, @error_not_found}
@@ -247,7 +248,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
     ChatMessage
     |> where(channel_id: ^channel.id)
     |> order_by(:inserted_at)
-    |> Absinthe.Relay.Connection.from_query(&Repo.all/1, args)
+    |> Connection.from_query(&Repo.all/1, args)
   end
 
   # Moderations
@@ -258,7 +259,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
     Streams.ChannelBan
     |> where(channel_id: ^channel.id)
     |> order_by(:inserted_at)
-    |> Absinthe.Relay.Connection.from_query(&Repo.all/1, args)
+    |> Connection.from_query(&Repo.all/1, args)
   end
 
   def get_moderators(args, %{source: channel}) do
@@ -267,7 +268,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
     Streams.ChannelModerator
     |> where(channel_id: ^channel.id)
     |> order_by(:inserted_at)
-    |> Absinthe.Relay.Connection.from_query(&Repo.all/1, args)
+    |> Connection.from_query(&Repo.all/1, args)
   end
 
   def get_moderation_logs(args, %{source: channel}) do
@@ -276,6 +277,6 @@ defmodule Glimesh.Resolvers.ChannelResolver do
     Streams.ChannelModerationLog
     |> where(channel_id: ^channel.id)
     |> order_by(:inserted_at)
-    |> Absinthe.Relay.Connection.from_query(&Repo.all/1, args)
+    |> Connection.from_query(&Repo.all/1, args)
   end
 end

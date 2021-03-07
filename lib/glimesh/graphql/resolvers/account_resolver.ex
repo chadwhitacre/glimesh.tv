@@ -1,5 +1,6 @@
 defmodule Glimesh.Resolvers.AccountResolver do
   @moduledoc false
+  alias Absinthe.Relay.Connection
   alias Glimesh.AccountFollows
   alias Glimesh.Accounts
   alias Glimesh.Repo
@@ -18,7 +19,7 @@ defmodule Glimesh.Resolvers.AccountResolver do
 
   def all_users(args, _) do
     Accounts.list_users()
-    |> Absinthe.Relay.Connection.from_query(&Repo.all/1, args)
+    |> Connection.from_query(&Repo.all/1, args)
   end
 
   def find_user(%{id: id}, _) do
@@ -103,8 +104,8 @@ defmodule Glimesh.Resolvers.AccountResolver do
     args = Map.put(args, :first, min(Map.get(args, :first), 1000))
 
     case all_followers(args) do
-      {:ok, :query, resp} -> Absinthe.Relay.Connection.from_query(resp, &Repo.all/1, args)
-      {:ok, :single, resp} -> Absinthe.Relay.Connection.from_list(resp, args)
+      {:ok, :query, resp} -> Connection.from_query(resp, &Repo.all/1, args)
+      {:ok, :single, resp} -> Connection.from_list(resp, args)
       {:error, err} -> {:error, err}
     end
   end
