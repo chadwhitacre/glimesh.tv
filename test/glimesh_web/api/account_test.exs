@@ -12,7 +12,11 @@ defmodule GlimeshWeb.Api.AccountTest do
   @users_query """
   query getUsers {
     users(first: 200) {
-      username
+      edges{
+        node{
+          username
+        }
+      }
     }
   }
   """
@@ -46,7 +50,7 @@ defmodule GlimeshWeb.Api.AccountTest do
         })
 
       assert json_response(conn, 200) == %{
-               "data" => %{"users" => [%{"username" => user.username}]}
+               "data" => %{"users" => %{"edges" => [%{"node" => %{"username" => user.username}}]}}
              }
     end
 

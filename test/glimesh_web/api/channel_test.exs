@@ -8,8 +8,12 @@ defmodule GlimeshWeb.Api.ChannelTest do
   @channels_query """
   query getChannels {
     channels(first: 200) {
-      title
-      streamer { username }
+      edges{
+        node{
+          title
+          streamer { username }
+        }
+      }
     }
   }
   """
@@ -38,12 +42,16 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
       assert json_response(conn, 200) == %{
                "data" => %{
-                 "channels" => [
-                   %{
-                     "title" => "Live Stream!",
-                     "streamer" => %{"username" => user.username}
-                   }
-                 ]
+                 "channels" => %{
+                   "edges" => [
+                     %{
+                       "node" => %{
+                         "title" => "Live Stream!",
+                         "streamer" => %{"username" => user.username}
+                       }
+                     }
+                   ]
+                 }
                }
              }
     end
