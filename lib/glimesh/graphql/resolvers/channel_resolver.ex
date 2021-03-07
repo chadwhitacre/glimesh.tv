@@ -240,7 +240,8 @@ defmodule Glimesh.Resolvers.ChannelResolver do
   # Chat
 
   def get_messages(args, %{source: channel}) do
-    # Set the chat message load count to be at 100 since it has to be hitting the repo 202 times for the the messages with isMod queried
+    # Set the chat message load count to be at 100 since it has to be
+    # hitting the repo 202 times for the the messages with isMod queried
     args = Map.put(args, :first, min(Map.get(args, :first), 100))
 
     ChatMessage
